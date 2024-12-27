@@ -884,30 +884,34 @@ document.getElementById('orderForm').addEventListener('submit', async function(e
     const orderItems = cart.map(item => `${item.name} = €${(item.price * item.quantity).toFixed(2)}`).join('\n');
 
     const webhookBody = {
-        embeds: [{
-            title: "Nuova Ordinazione Armeria Beretta",
-            color: 0x0d52e7,
-            fields: [
-                {
-                    name: "Off-rp",
-                    value: `Discord Nickname: ${discordUser.username}\nDiscord id: ${discordUser.id}`,
-                    inline: false
-                },
-                {
-                    name: "On-rp",
-                    value: `Nome e Cognome: ${formData.get('orderName')}\nNumero di Telefono: ${formData.get('orderPhone')}`,
-                    inline: false
-                },
-                {
-                    name: "Ordinazione",
-                    value: `${orderItems}\nTotale = €${total.toFixed(2)}`,
-                    inline: false
-                }
-            ],
-            timestamp: new Date().toISOString()
-        }]
-    };
-
+    username: "Armeria Beretta", // Nome personalizzato per il webhook
+    avatar_url: "logob.png", // Opzionale: URL di un'immagine per l'avatar
+    embeds: [{
+        title: "🛍️ Nuovo Ordine",
+        color: 0x0d52e7, // Colore blu come nel tuo tema
+        fields: [
+            {
+                name: "👤 Informazioni Cliente",
+                value: `**Discord:** ${discordUser.username}\n**ID:** ${discordUser.id}\n**Nome:** ${formData.get('orderName')}\n**Telefono:** ${formData.get('orderPhone')}`,
+                inline: false
+            },
+            {
+                name: "📦 Dettagli Ordine",
+                value: cart.map(item => `• ${item.name} (${item.quantity}x) - €${(item.price * item.quantity).toFixed(2)}`).join('\n'),
+                inline: false
+            },
+            {
+                name: "💰 Totale",
+                value: `€${total.toFixed(2)}`,
+                inline: false
+            }
+        ],
+        timestamp: new Date().toISOString(),
+        footer: {
+            text: "Sistema Ordini Armeria Beretta"
+        }
+    }]
+};
     try {
         const response = await fetch(DISCORD_WEBHOOK_URL, {
             method: 'POST',
@@ -931,6 +935,7 @@ document.getElementById('orderForm').addEventListener('submit', async function(e
         alert('Si è verificato un errore nell\'invio dell\'ordine. Riprova più tardi.');
     }
 });
+
 document.getElementById('jobApplicationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     if (!isLoggedIn) {

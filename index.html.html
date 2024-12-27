@@ -883,7 +883,7 @@ document.getElementById('orderForm').addEventListener('submit', async function(e
     const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
     const orderItems = cart.map(item => `${item.name} = €${(item.price * item.quantity).toFixed(2)}`).join('\n');
 
-    const message = {
+    const webhookBody = {
         embeds: [{
             title: "Nuova Ordinazione Armeria Beretta",
             color: 0x0d52e7,
@@ -914,7 +914,7 @@ document.getElementById('orderForm').addEventListener('submit', async function(e
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(message)
+            body: JSON.stringify(webhookBody)
         });
 
         if (response.ok) {
@@ -931,7 +931,6 @@ document.getElementById('orderForm').addEventListener('submit', async function(e
         alert('Si è verificato un errore nell\'invio dell\'ordine. Riprova più tardi.');
     }
 });
-
 document.getElementById('jobApplicationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     if (!isLoggedIn) {

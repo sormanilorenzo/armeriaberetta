@@ -435,6 +435,73 @@
                     right: 1rem;
                 }
             }
+
+            .location-icon {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+        .location-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1001;
+        }
+
+        .location-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .location-image {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .close-location {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: var(--header-background);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-location:hover {
+            box-shadow: 0 0 5px var(--neon-blue),
+                        0 0 15px var(--neon-blue),
+                        0 0 30px var(--neon-blue);
+        }
+
+        @media (max-width: 768px) {
+            .location-content {
+                width: 95%;
+            }
+        }
+
         </style>
     </head>
 <body>
@@ -445,6 +512,13 @@
                 <div class="volume-control">
             <img id="volumeIcon" src="images/volume-2.svg" alt="Volume" class="volume-icon">
         <input type="range" id="volumeSlider" min="0" max="100" value="50">
+    </div>
+
+    <div id="locationModal" class="location-modal">
+        <div class="location-content">
+            <img src="images/locazione.png" alt="La nostra sede" class="location-image">
+            <button class="close-location" onclick="closeLocationModal()">&times;</button>
+        </div>
     </div>
 
     <div class="discord-auth" id="discordAuth">
@@ -533,6 +607,13 @@
             <a href="#armi" class="category-link">Armi</a>
             <a href="#pack" class="category-link">Pack Proiettili</a>
             <a href="#" class="category-link" onclick="handleJobApplication()">Lavora con noi</a>
+            <a href="#" class="category-link" id="locationButton">
+                Dove siamo
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+            </a>
         </nav>
     </header>
 
@@ -642,7 +723,7 @@
                 { id: 13, name: 'Metal Detector', price: 250, description: 'Metal Detector a libera vendita', image: 'images/metaldetector.png' },
             ],
             armi: [
-                { id: 14, name: 'Certificato uso e maneggio delle armi', price: 3000, description: 'Rilascio Certificazione', image: 'images/documento.png' },
+                { id: 14, name: 'Certificato uso e maneggio delle armi', price: 3000, description: 'Rilascio Certificato di uso e maneggio delle armi', image: 'images/documento.png' },
                 { id: 15, name: 'Pistola SNS MK2', price: 15000, description: 'Necessario porto di armi', image: 'images/sns.png' },
                 { id: 16, name: 'Beretta 92FS', price: 25000, description: 'Necessario porto di armi', image: 'images/92fs.png' },
                 { id: 17, name: 'Glock 17', price: 35000, description: 'Necessario porto di armi', image: 'images/g17.png' },
@@ -1067,6 +1148,28 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('jobApplicationForm').addEventListener('submit', function() {
     enterSound.play();
 });
+
+        const locationModal = document.getElementById('locationModal');
+
+        document.getElementById('locationButton').addEventListener('click', function(e) {
+            e.preventDefault();
+            locationModal.style.display = 'block';
+            clickSound.currentTime = 0;
+            clickSound.play();
+        });
+
+        function closeLocationModal() {
+            locationModal.style.display = 'none';
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        // Chiudi il modal quando si clicca fuori
+        locationModal.addEventListener('click', function(e) {
+            if (e.target === locationModal) {
+                closeLocationModal();
+            }
+        });
 
 </script>
 </body>

@@ -834,20 +834,20 @@
         }
 
         function handleOrder() {
-    if (!isLoggedIn) {
-        showUnauthorizedOverlay();
-        return;
+        if (!isLoggedIn) {
+            showUnauthorizedOverlay();
+            return;
+        }
+        if (cart.length === 0) {
+            alert('Il carrello è vuoto!');
+            return;
+        }
+        showOrderModal();
     }
-    if (cart.length === 0) {
-        alert('Il carrello è vuoto!');
-        return;
-    }
-    showOrderModal();
-}
 
-function showOrderModal() {
-    const orderModal = document.getElementById('orderModal');
-    const orderSummary = document.getElementById('orderSummary');
+    function showOrderModal() {
+        const orderModal = document.getElementById('orderModal');
+        const orderSummary = document.getElementById('orderSummary');
     
     // Display cart summary in the modal
     const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -881,58 +881,57 @@ document.getElementById('orderForm').addEventListener('submit', async function(e
     const formData = new FormData(e.target);
     
     const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const orderItems = cart.map(item => `${item.name} = €${(item.price * item.quantity).toFixed(2)}`).join('\n');
+    
+    // Create a more compact webhook message
+    const webhookData = {
+        content: null,
+        embeds: [{
+            title: "🛍️ Nuovo Ordine",
+            color: 3426535, // Hex color: #0d52e7
+            fields: [
+                {
+                    name: "Cliente",
+                    value: `Discord: ${discordUser.username} (${discordUser.id})\nNome: ${formData.get('orderName')}\nTelefono: ${formData.get('orderPhone')}`,
+                    inline: false
+                },
+                {
+                    name: "Prodotti",
+                    value: cart.map(item => `• ${item.name} x${item.quantity} = €${(item.price * item.quantity).toFixed(2)}`).join('\n'),
+                    inline: false
+                },
+                {
+                    name: "Totale",
+                    value: `€${total.toFixed(2)}`,
+                    inline: false
+                }
+            ],
+            timestamp: new Date().toISOString()
+        }]
+    };
 
-    const webhookBody = {
-    username: "Armeria Beretta", // Nome personalizzato per il webhook
-    avatar_url: "logob.png", // Opzionale: URL di un'immagine per l'avatar
-    embeds: [{
-        title: "🛍️ Nuovo Ordine",
-        color: 0x0d52e7, // Colore blu come nel tuo tema
-        fields: [
-            {
-                name: "👤 Informazioni Cliente",
-                value: `**Discord:** ${discordUser.username}\n**ID:** ${discordUser.id}\n**Nome:** ${formData.get('orderName')}\n**Telefono:** ${formData.get('orderPhone')}`,
-                inline: false
-            },
-            {
-                name: "📦 Dettagli Ordine",
-                value: cart.map(item => `• ${item.name} (${item.quantity}x) - €${(item.price * item.quantity).toFixed(2)}`).join('\n'),
-                inline: false
-            },
-            {
-                name: "💰 Totale",
-                value: `€${total.toFixed(2)}`,
-                inline: false
-            }
-        ],
-        timestamp: new Date().toISOString(),
-        footer: {
-            text: "Sistema Ordini Armeria Beretta"
-        }
-    }]
-};
     try {
         const response = await fetch(DISCORD_WEBHOOK_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(webhookBody)
+            body: JSON.stringify(webhookData)
         });
 
-        if (response.ok) {
-            alert('Ordine inviato con successo!');
-            cart = [];
-            updateCartDisplay();
-            closeOrderModal();
-            e.target.reset();
-        } else {
-            throw new Error('Errore nell\'invio dell\'ordine');
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Discord webhook error:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        alert('Ordine inviato con successo!');
+        cart = [];
+        updateCartDisplay();
+        closeOrderModal();
+        e.target.reset();
     } catch (error) {
-        console.error('Errore:', error);
-        alert('Si è verificato un errore nell\'invio dell\'ordine. Riprova più tardi.');
+        console.error('Error details:', error);
+        alert('Errore nell\'invio dell\'ordine: ' + error.message);
     }
 });
 

@@ -621,10 +621,10 @@
 
     <header>
         <div class="header-top">
-            <img src="images/logo.png" alt="Logo Sinistro" class="header-logo">
+            <img src="images/logo.png" alt="Logo Sinistro" class="header-logo" id="leftLogo">
             <div class="header-title">
-                <h1>Armeria Beretta</h1>
-                <p>Armeria Beretta: Precisione Italiana, Passione Senza Confini</p>
+                <h1 id="mainTitle">Armeria Beretta</h1>
+                <p id="slogan">Armeria Beretta: Precisione Italiana, Passione Senza Confini</p>
             </div>
             <img src="images/logo.png" alt="Logo Destro" class="header-logo theme-toggle" onclick="toggleTheme()" id="themeToggle">
         </div>
@@ -632,6 +632,7 @@
             <a href="#libere" class="category-link">Libere</a>
             <a href="#armi" class="category-link">Armi</a>
             <a href="#pack" class="category-link">Pack Proiettili</a>
+            <a href="#mercato" class="category-link" id="mercatoLink" style="display: none;">Mercato Nero</a>
             <a href="#" class="category-link" onclick="handleJobApplication()">Lavora con noi</a>
             <a href="#" class="category-link" id="locationButton">
                 Dove siamo
@@ -771,9 +772,15 @@
             ],
 
             mercato: [
-                { id: 25, name: 'Prodotto 1', price: 1000, description: 'Descrizione prodotto 1', image: 'images/anonlogo.png' },
-                { id: 26, name: 'Prodotto 2', price: 2000, description: 'Descrizione prodotto 2', image: 'images/anonlogo.png' },
-                { id: 27, name: 'Prodotto 3', price: 3000, description: 'Descrizione prodotto 3', image: 'images/anonlogo.png' },
+                { id: 25, name: 'Prodotto 1', price: 1000, description: 'Descrizione prodotto 1', image: 'images/itemmercato.png' },
+                { id: 26, name: 'Prodotto 2', price: 2000, description: 'Descrizione prodotto 2', image: 'images/itemmercato.png' },
+                { id: 27, name: 'Prodotto 3', price: 3000, description: 'Descrizione prodotto 3', image: 'images/itemmercato.png' },
+                { id: 28, name: 'Prodotto 4', price: 1000, description: 'Descrizione prodotto 4', image: 'images/itemmercato.png' },
+                { id: 29, name: 'Prodotto 5', price: 2000, description: 'Descrizione prodotto 5', image: 'images/itemmercato.png' },
+                { id: 30, name: 'Prodotto 6', price: 3000, description: 'Descrizione prodotto 6', image: 'images/itemmercato.png' },
+                { id: 31, name: 'Prodotto 7', price: 1000, description: 'Descrizione prodotto 7', image: 'images/itemmercato.png' },
+                { id: 32, name: 'Prodotto 8', price: 2000, description: 'Descrizione prodotto 8', image: 'images/itemmercato.png' },
+                { id: 33, name: 'Prodotto 9', price: 3000, description: 'Descrizione prodotto 9', image: 'images/itemmercato.png' },
             ],
 
         };
@@ -1211,26 +1218,94 @@ document.addEventListener('DOMContentLoaded', function() {
         let currentTheme = 'light';
 
         function toggleTheme() {
-            const root = document.documentElement;
-            const background = document.body;
-            const audio = document.getElementById('backgroundMusic');
+        const root = document.documentElement;
+        const background = document.body;
+        const audio = document.getElementById('backgroundMusic');
+        const mainTitle = document.getElementById('mainTitle');
+        const slogan = document.getElementById('slogan');
+        const mercatoLink = document.getElementById('mercatoLink');
 
-            if (currentTheme === 'light') {
-                root.setAttribute('data-theme', 'dark');
-                background.style.backgroundImage = "url('images/sfondo.png')";
-                audio.src = 'sounds/mercato.mp3';
-                currentTheme = 'dark';
-            } else {
-                root.setAttribute('data-theme', 'light');
-                background.style.backgroundImage = "url('images/sfondo.png')";
-                audio.src = 'sounds/background.mp3';
-                currentTheme = 'light';
-            }
-
-            audio.load();
-            audio.play();
-            initializeMenus();
+        if (currentTheme === 'light') {
+            // Switch to dark theme
+            root.setAttribute('data-theme', 'dark');
+            background.style.backgroundImage = "url('images/sfondo.png')";
+            audio.src = 'sounds/mercato.mp3';
+            mainTitle.textContent = "Mercato Nero";
+            slogan.textContent = "Più illegale di così si muore";
+            mercatoLink.style.display = 'block';
+            currentTheme = 'dark';
+        } else {
+            // Switch back to light theme
+            root.setAttribute('data-theme', 'light');
+            background.style.backgroundImage = "url('images/sfondo.png')";
+            audio.src = 'sounds/background.mp3';
+            mainTitle.textContent = "Armeria Beretta";
+            slogan.textContent = "Armeria Beretta: Precisione Italiana, Passione Senza Confini";
+            mercatoLink.style.display = 'none';
+            currentTheme = 'light';
         }
+
+        audio.load();
+        audio.play();
+        initializeMenus();
+    }
+
+    // Find the nav section and add display none/block based on theme
+const categoryElements = document.querySelectorAll('#libere, #armi, #pack');
+const navLinks = document.querySelectorAll('.category-link');
+
+// Updated toggleTheme function
+    function toggleTheme() {
+        const root = document.documentElement;
+        const background = document.body;
+        const audio = document.getElementById('backgroundMusic');
+        const mainTitle = document.getElementById('mainTitle');
+        const slogan = document.getElementById('slogan');
+        const mercatoLink = document.getElementById('mercatoLink');
+        const leftLogo = document.getElementById('leftLogo');
+        const themeToggle = document.getElementById('themeToggle');
+        
+        const regularNavLinks = Array.from(navLinks).filter(link => 
+            !link.getAttribute('href')?.includes('mercato'));
+
+        if (currentTheme === 'light') {
+            // Switch to dark theme
+            root.setAttribute('data-theme', 'dark');
+            background.style.backgroundImage = "url('images/sfondo2.png')";
+            audio.src = 'sounds/mercato.mp3';
+            mainTitle.textContent = "Mercato Nero";
+            slogan.textContent = "Più illegale di così si muore";
+            mercatoLink.style.display = 'block';
+            leftLogo.src = 'images/mercato.png';
+            themeToggle.src = 'images/mercato.png';
+            
+            // Hide regular sections and nav links
+            categoryElements.forEach(element => element.style.display = 'none');
+            regularNavLinks.forEach(link => link.style.display = 'none');
+            
+            currentTheme = 'dark';
+        } else {
+            // Switch back to light theme
+            root.setAttribute('data-theme', 'light');
+            background.style.backgroundImage = "url('images/sfondo.png')";
+            audio.src = 'sounds/background.mp3';
+            mainTitle.textContent = "Armeria Beretta";
+            slogan.textContent = "Armeria Beretta: Precisione Italiana, Passione Senza Confini";
+            mercatoLink.style.display = 'none';
+            leftLogo.src = 'images/logo.png';
+            themeToggle.src = 'images/logo.png';
+            
+            // Show regular sections and nav links
+            categoryElements.forEach(element => element.style.display = 'block');
+            regularNavLinks.forEach(link => link.style.display = 'block');
+            
+            currentTheme = 'light';
+        }
+
+        audio.load();
+        audio.play();
+        initializeMenus();
+    }
 
 </script>
 </body>

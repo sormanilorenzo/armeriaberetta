@@ -528,6 +528,92 @@
                 transform: scale(1.1);
             }
 
+            .flyer-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                z-index: 1001;
+            }
+
+            .flyer-content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 1rem;
+                border-radius: 8px;
+                max-width: 90%;
+                max-height: 90%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .flyer-image {
+                max-width: 100%;
+                max-height: 70vh;
+                display: block;
+                border-radius: 4px;
+            }
+
+            .flyer-nav {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            .flyer-nav button {
+                background-color: var(--header-background);
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .flyer-nav button:hover {
+                box-shadow: 0 0 5px var(--neon-blue),
+                            0 0 15px var(--neon-blue),
+                            0 0 30px var(--neon-blue);
+            }
+
+            .close-flyer {
+                position: absolute;
+                top: -15px;
+                right: -15px;
+                background: var(--header-background);
+                color: white;
+                border: none;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+
+            .close-flyer:hover {
+                box-shadow: 0 0 5px var(--neon-blue),
+                            0 0 15px var(--neon-blue),
+                            0 0 30px var(--neon-blue);
+            }
+
+            @media (max-width: 768px) {
+                .flyer-content {
+                    width: 95%;
+                }
+            }
+
         </style>
     </head>
 <body>
@@ -538,6 +624,17 @@
                 <div class="volume-control">
             <img id="volumeIcon" src="images/volume-2.svg" alt="Volume" class="volume-icon">
         <input type="range" id="volumeSlider" min="0" max="100" value="50">
+    </div>
+
+    <div id="flyerModal" class="flyer-modal">
+        <div class="flyer-content">
+            <img id="flyerImage" src="images/listino1.png" alt="Volantino" class="flyer-image">
+            <div class="flyer-nav">
+                <button onclick="prevFlyer()">← Precedente</button>
+                <button onclick="nextFlyer()">Successivo →</button>
+            </div>
+            <button class="close-flyer" onclick="closeFlyerModal()">&times;</button>
+        </div>
     </div>
 
     <div id="locationModal" class="location-modal">
@@ -632,6 +729,7 @@
             <a href="#libere" class="category-link">Libere</a>
             <a href="#armi" class="category-link">Armi</a>
             <a href="#pack" class="category-link">Pack Proiettili</a>
+            <a href="#" class="category-link" id="volantinoLink" onclick="showFlyerModal()">Listino</a>
             <a href="#mercato" class="category-link" id="mercatoLink" style="display: none;">Mercato Nero</a>
             <a href="#" class="category-link" onclick="handleJobApplication()">Lavora con noi</a>
             <a href="#" class="category-link" id="locationButton">
@@ -952,6 +1050,64 @@
                 alert('Si è verificato un errore nell\'invio della candidatura. Riprova più tardi.');
             }
         });
+
+                const flyers = [
+            'images/listino1.png',
+            'images/listino2.png',
+            'images/listino3.png'
+            // Add more flyer images as needed
+        ];
+
+        let currentFlyerIndex = 0;
+
+        function showFlyerModal() {
+            document.getElementById('flyerModal').style.display = 'block';
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        function closeFlyerModal() {
+            document.getElementById('flyerModal').style.display = 'none';
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        function updateFlyerImage() {
+            document.getElementById('flyerImage').src = flyers[currentFlyerIndex];
+        }
+
+        function nextFlyer() {
+            currentFlyerIndex = (currentFlyerIndex + 1) % flyers.length;
+            updateFlyerImage();
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        function prevFlyer() {
+            currentFlyerIndex = (currentFlyerIndex - 1 + flyers.length) % flyers.length;
+            updateFlyerImage();
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('flyerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFlyerModal();
+            }
+        });
+
+        // Update the toggleTheme function to handle the Volantini button visibility
+        const originalToggleTheme = toggleTheme;
+        toggleTheme = function() {
+            originalToggleTheme();
+            const volantinoLink = document.getElementById('volantinoLink');
+            if (currentTheme === 'dark') {
+                volantinoLink.style.display = 'none';
+            } else {
+                volantinoLink.style.display = 'block';
+            }
+        }
 
         function showUnauthorizedOverlay() {
             document.getElementById('unauthorizedOverlay').style.display = 'flex';

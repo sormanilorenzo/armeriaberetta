@@ -623,7 +623,7 @@
 
                 <div class="volume-control">
             <img id="volumeIcon" src="images/volume-2.svg" alt="Volume" class="volume-icon">
-        <input type="range" id="volumeSlider" min="0" max="100" value="50">
+        <input type="range" id="volumeSlider" min="0" max="100" value="10">
     </div>
 
     <div id="flyerModal" class="flyer-modal">
@@ -784,7 +784,7 @@
 
         // Initialize volume
         let isMuted = false;
-        let previousVolume = 0.5;
+        let previousVolume = 0.1;
         backgroundMusic.volume = previousVolume;
         clickSound.volume = previousVolume;
         enterSound.volume = previousVolume;

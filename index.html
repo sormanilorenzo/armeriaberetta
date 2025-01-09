@@ -1435,57 +1435,60 @@ const categoryElements = document.querySelectorAll('#libere, #armi, #pack');
 const navLinks = document.querySelectorAll('.category-link');
 
 // Updated toggleTheme function
-    function toggleTheme() {
-        const root = document.documentElement;
-        const background = document.body;
-        const audio = document.getElementById('backgroundMusic');
-        const mainTitle = document.getElementById('mainTitle');
-        const slogan = document.getElementById('slogan');
-        const mercatoLink = document.getElementById('mercatoLink');
-        const leftLogo = document.getElementById('leftLogo');
-        const themeToggle = document.getElementById('themeToggle');
+function toggleTheme() {
+    const root = document.documentElement;
+    const background = document.body;
+    const audio = document.getElementById('backgroundMusic');
+    const mainTitle = document.getElementById('mainTitle');
+    const slogan = document.getElementById('slogan');
+    const mercatoLink = document.getElementById('mercatoLink');
+    const leftLogo = document.getElementById('leftLogo');
+    const themeToggle = document.getElementById('themeToggle');
+    const footer = document.querySelector('footer'); // Seleziona il footer
+    
+    const regularNavLinks = Array.from(navLinks).filter(link => 
+        !link.getAttribute('href')?.includes('mercato'));
+
+    if (currentTheme === 'light') {
+        // Passa al tema scuro
+        root.setAttribute('data-theme', 'dark');
+        background.style.backgroundImage = "url('images/sfondo2.png')";
+        audio.src = 'sounds/mercato.mp3';
+        mainTitle.textContent = "Mercato Nero";
+        slogan.textContent = "Più illegale di così si muore";
+        mercatoLink.style.display = 'block';
+        leftLogo.src = 'images/mercato.png';
+        themeToggle.src = 'images/mercato.png';
+        footer.style.display = 'none'; // Nascondi il footer
+
+        // Nascondi sezioni e link regolari
+        categoryElements.forEach(element => element.style.display = 'none');
+        regularNavLinks.forEach(link => link.style.display = 'none');
         
-        const regularNavLinks = Array.from(navLinks).filter(link => 
-            !link.getAttribute('href')?.includes('mercato'));
+        currentTheme = 'dark';
+    } else {
+        // Torna al tema chiaro
+        root.setAttribute('data-theme', 'light');
+        background.style.backgroundImage = "url('images/sfondo.png')";
+        audio.src = 'sounds/background.mp3';
+        mainTitle.textContent = "Armeria Beretta";
+        slogan.textContent = "Armeria Beretta: Quality Without Compromise";
+        mercatoLink.style.display = 'none';
+        leftLogo.src = 'images/logo.png';
+        themeToggle.src = 'images/logo.png';
+        footer.style.display = 'block'; // Mostra di nuovo il footer
 
-        if (currentTheme === 'light') {
-            // Switch to dark theme
-            root.setAttribute('data-theme', 'dark');
-            background.style.backgroundImage = "url('images/sfondo2.png')";
-            audio.src = 'sounds/mercato.mp3';
-            mainTitle.textContent = "Mercato Nero";
-            slogan.textContent = "Più illegale di così si muore";
-            mercatoLink.style.display = 'block';
-            leftLogo.src = 'images/mercato.png';
-            themeToggle.src = 'images/mercato.png';
-            
-            // Hide regular sections and nav links
-            categoryElements.forEach(element => element.style.display = 'none');
-            regularNavLinks.forEach(link => link.style.display = 'none');
-            
-            currentTheme = 'dark';
-        } else {
-            // Switch back to light theme
-            root.setAttribute('data-theme', 'light');
-            background.style.backgroundImage = "url('images/sfondo.png')";
-            audio.src = 'sounds/background.mp3';
-            mainTitle.textContent = "Armeria Beretta";
-            slogan.textContent = "Armeria Beretta: Precisione Italiana, Passione Senza Confini";
-            mercatoLink.style.display = 'none';
-            leftLogo.src = 'images/logo.png';
-            themeToggle.src = 'images/logo.png';
-            
-            // Show regular sections and nav links
-            categoryElements.forEach(element => element.style.display = 'block');
-            regularNavLinks.forEach(link => link.style.display = 'block');
-            
-            currentTheme = 'light';
-        }
-
-        audio.load();
-        audio.play();
-        initializeMenus();
+        // Mostra sezioni e link regolari
+        categoryElements.forEach(element => element.style.display = 'block');
+        regularNavLinks.forEach(link => link.style.display = 'block');
+        
+        currentTheme = 'light';
     }
+
+    audio.load();
+    audio.play();
+    initializeMenus();
+}
 
 </script>
 </body>

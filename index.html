@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
     <head>
@@ -633,6 +634,43 @@
                 border-radius: 8px;
             }
 
+            .slideshow-container {
+                position: relative;
+                max-width: 100%;
+                margin: auto;
+                /* Aggiungiamo un'altezza minima per mantenere il contenitore */
+                min-height: 200px; /* Regola questo valore in base all'altezza delle tue immagini */
+            }
+
+            .slide {
+                display: none;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+                /* Aggiungiamo un'altezza fissa */
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .slide:first-child {
+                position: relative;
+                display: block;
+                opacity: 1;
+            }
+
+            .fade {
+                animation-name: fade;
+                animation-duration: 1s;
+            }
+
+            @keyframes fade {
+                from {opacity: 0}
+                to {opacity: 1}
+            }
+
         </style>
     </head>
 <body>
@@ -777,7 +815,10 @@
 
     <footer>
         <div class="footer-content">
-            <img src="images/pubblicita.png" alt="Footer Image" class="footer-image">
+            <div class="slideshow-container">
+                <img src="images/pubblicitapizza.png" alt="Footer Image 1" class="footer-image slide fade">
+                <img src="images/pubblicitawasabi.png" alt="Footer Image 2" class="footer-image slide fade">
+            </div>
         </div>
     </footer>
 
@@ -1489,6 +1530,35 @@ function toggleTheme() {
     audio.play();
     initializeMenus();
 }
+
+let slideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+
+    function showSlides() {
+        // Nascondi tutte le slide
+        slides.forEach(slide => {
+            slide.style.display = "none";
+            slide.style.opacity = "0";
+        });
+
+        // Incrementa l'indice
+        slideIndex++;
+        if (slideIndex > slides.length) {
+            slideIndex = 1;
+        }
+
+        // Mostra la slide corrente
+        slides[slideIndex - 1].style.display = "block";
+        setTimeout(() => {
+            slides[slideIndex - 1].style.opacity = "1";
+        }, 100);
+
+        // Cambia slide ogni 10 secondi
+        setTimeout(showSlides, 10000);
+    }
+
+    // Avvia lo slideshow quando il documento è caricato
+    document.addEventListener('DOMContentLoaded', showSlides);
 
 </script>
 </body>

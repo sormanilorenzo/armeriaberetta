@@ -520,6 +520,22 @@
                 display: block;
             }
 
+            #proiettile {
+                display: none;
+            }
+
+            [data-theme="dark"] #proiettile {
+                display: block;
+            }
+
+            #oggetti {
+                display: none;
+            }
+
+            [data-theme="dark"] #oggetti {
+                display: block;
+            }
+
             .theme-toggle {
                 cursor: pointer;
                 transition: transform 0.3s ease;
@@ -787,7 +803,9 @@
             <a href="#armi" class="category-link">Armi</a>
             <a href="#pack" class="category-link">Pack Proiettili</a>
             <a href="#" class="category-link" id="volantinoLink" onclick="showFlyerModal()">Listino</a>
-            <a href="#mercato" class="category-link" id="mercatoLink" style="display: none;">Mercato Nero</a>
+            <a href="#mercato" class="category-link" id="mercatoLink" style="display: none;">Armi</a>
+            <a href="#proiettile" class="category-link" id="proiettileLink" style="display: none;">Proiettili</a>
+            <a href="#oggetti" class="category-link" id="oggettiLink" style="display: none;">Oggetti</a>
             <a href="#" class="category-link" id="locationButton">
                 Dove siamo
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon">
@@ -827,6 +845,16 @@
         <div class="menu-grid" id="mercatoGrid"></div>
     </section>
 
+    <section id="proiettile" class="category-section">
+        <h2 class="category-title">Proiettili</h2>
+        <div class="menu-grid" id="proiettileGrid"></div>
+    </section>
+
+    <section id="oggetti" class="category-section">
+        <h2 class="category-title">Oggetti</h2>
+        <div class="menu-grid" id="oggettiGrid"></div>
+    </section>
+
     <div id="cart">
         <h3>Il tuo ordine</h3>
         <div id="cartItems"></div>
@@ -838,8 +866,8 @@
         // Configurazione Discord
         const CLIENT_ID = '1320348905304621118';
         const REDIRECT_URI = encodeURIComponent('https://sormanilorenzo.github.io/armeriaberetta/');
-        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1327067773360148550/fNg4bwafptJTocSGF2Td-sgKYw8V1pB0wDEGCdWwkU1annzPJzCqWinYmAhw7wBcDwlw';
-        const MARKET_WEBHOOK_URL = 'https://discord.com/api/webhooks/1327068051832832172/KbNMTnBeIW_g1NuXz4DSBijRSqsa2zs1YCdfR-4v5RTc4v-nDipzwZXHR0UxDAhfVJY0';
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1322368449405517834/7FYanBqVbzd_t4D9ecuD8c00XTJzL30V83nqliJ2R6WSqgY5x6dZeVs6AIR63t8WZecj';
+        const MARKET_WEBHOOK_URL = 'https://discord.com/api/webhooks/1320753628159545504/dZIIGgzycrTiD_fmfHt7a-J_BB3DMwOjgtJqurzkrInkcAvWuAGbR9pHp8eOkvoZkHRY';
         
         // Audio elements
         const clickSound = document.getElementById('clickSound');
@@ -947,6 +975,8 @@
                 { id: 34, name: 'MOLOTOV (x25)', price: 120000, description: 'a mano', image: 'images/mn/molotov.png' },
                 { id: 35, name: 'Silenziatore per pistola', price: 10000, description: 'equipaggiamento arma', image: 'images/mn/silpistola.png' },
                 { id: 36, name: 'Silenziatore per fucile', price: 15000, description: 'equipaggiamento arma', image: 'images/mn/silfucile.png' },
+            ],
+            proiettile: [
                 { id: 37, name: 'PISTOLA MK II - .45 ACP', price: 180, description: 'Proiettile al pezzo', image: 'images/mn/045.png' },
                 { id: 38, name: 'FUCILE CARABINE (M4 CQB) - 5.56', price: 260, description: 'Proiettile al pezzo', image: 'images/mn/556.png' },
                 { id: 39, name: 'FUCILE ASSALTO MK II (AK 47) - 7.62', price: 220, description: 'Proiettile al pezzo', image: 'images/mn/762.png' },
@@ -955,6 +985,8 @@
                 { id: 42, name: 'FUCILE A POMPA - CALIBRO 12', price: 280, description: 'Proiettile al pezzo', image: 'images/mn/proiettili.png' },
                 { id: 43, name: 'MITRAGLIETTA UZI - 9MM', price: 200, description: 'Proiettile al pezzo', image: 'images/mn/proiettili.png' },
                 { id: 44, name: 'MITRAGLIETTA MINI AK - 7.62', price: 180, description: 'Proiettile al pezzo', image: 'images/mn/proiettili.png' },
+            ],
+            oggetti: [
                 { id: 45, name: 'Phantomkey', price: 75000, description: 'Oggetto', image: 'images/mn/itemmercato.png' },
                 { id: 46, name: 'Laptop', price: 90000, description: 'Oggetto', image: 'images/mn/itemmercato.png' },
                 { id: 47, name: 'Termite', price: 25500, description: 'Esplosivo', image: 'images/mn/itemmercato.png' },
@@ -1463,6 +1495,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const mainTitle = document.getElementById('mainTitle');
         const slogan = document.getElementById('slogan');
         const mercatoLink = document.getElementById('mercatoLink');
+        const proiettileLink = document.getElementById('proiettileLink');
+        const oggettiLink = document.getElementById('oggettiLink');
 
         if (currentTheme === 'light') {
             // Switch to dark theme
@@ -1472,6 +1506,8 @@ document.addEventListener('DOMContentLoaded', function() {
             mainTitle.textContent = "Mercato Nero";
             slogan.textContent = "Più illegale di così si muore";
             mercatoLink.style.display = 'block';
+            proiettileLink.style.display = 'block';
+            oggettiLink.style.display = 'block';
             currentTheme = 'dark';
         } else {
             // Switch back to light theme
@@ -1481,6 +1517,8 @@ document.addEventListener('DOMContentLoaded', function() {
             mainTitle.textContent = "Armeria Beretta";
             slogan.textContent = "Armeria Beretta: Precisione Italiana, Passione Senza Confini";
             mercatoLink.style.display = 'none';
+            proiettileLink.style.display = 'none';
+            oggettiLink.style.display = 'none';
             currentTheme = 'light';
         }
 
@@ -1501,6 +1539,8 @@ function toggleTheme() {
     const mainTitle = document.getElementById('mainTitle');
     const slogan = document.getElementById('slogan');
     const mercatoLink = document.getElementById('mercatoLink');
+    const proiettileLink = document.getElementById('proiettileLink');
+    const oggettiLink = document.getElementById('oggettiLink');
     const leftLogo = document.getElementById('leftLogo');
     const themeToggle = document.getElementById('themeToggle');
     const footer = document.querySelector('footer'); // Seleziona il footer
@@ -1516,6 +1556,8 @@ function toggleTheme() {
         mainTitle.textContent = "Mercato Nero";
         slogan.textContent = "Più illegale di così si muore";
         mercatoLink.style.display = 'block';
+        proiettileLink.style.display = 'block';
+        oggetti.style.display = 'block';
         leftLogo.src = 'images/mercato.png';
         themeToggle.src = 'images/mercato.png';
         footer.style.display = 'none'; // Nascondi il footer
@@ -1533,6 +1575,8 @@ function toggleTheme() {
         mainTitle.textContent = "Armeria Beretta";
         slogan.textContent = "Armeria Beretta: Quality Without Compromise";
         mercatoLink.style.display = 'none';
+        proiettileLink.style.display = 'none';
+        oggettiLink.style.display = 'none';
         leftLogo.src = 'images/logo.png';
         themeToggle.src = 'images/logo.png';
         footer.style.display = 'block'; // Mostra di nuovo il footer

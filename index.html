@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
     <head>
@@ -519,6 +518,22 @@
             [data-theme="dark"] #mercato {
                 display: block;
             }
+            
+            #proiettili {
+                display: none;
+            }
+
+            [data-theme="dark"] #proiettili {
+                display: block;
+            }
+            
+            #kitspeciali {
+                display: none;
+            }
+
+            [data-theme="dark"] #kitspeciali {
+                display: block;
+            }
 
             .theme-toggle {
                 cursor: pointer;
@@ -788,6 +803,8 @@
             <a href="#pack" class="category-link">Pack Proiettili</a>
             <a href="#" class="category-link" id="volantinoLink" onclick="showFlyerModal()">Listino</a>
             <a href="#mercato" class="category-link" id="mercatoLink" style="display: none;">Mercato Nero</a>
+            <a href="#proiettili" class="category-link" id="proiettiliLink" style="display: none;">Proiettili</a>
+            <a href="#kitspeciali" class="category-link" id="kitspecialiLink" style="display: none;">Kit Speciali</a>
             <a href="#" class="category-link" id="locationButton">
                 Dove siamo
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon">
@@ -825,6 +842,16 @@
     <section id="mercato" class="category-section">
         <h2 class="category-title">Mercato Nero</h2>
         <div class="menu-grid" id="mercatoGrid"></div>
+    </section>
+
+    <section id="proiettili" class="category-section">
+        <h2 class="category-title">proiettili</h2>
+        <div class="menu-grid" id="proiettiliGrid"></div>
+    </section>
+
+    <section id="kitspeciali" class="category-section">
+        <h2 class="category-title">Kit Speciali</h2>
+        <div class="menu-grid" id="kitspecialiGrid"></div>
     </section>
 
     <div id="cart">
@@ -947,6 +974,8 @@
                 { id: 34, name: 'MOLOTOV (x25)', price: 120000, description: 'a mano', image: 'images/mn/molotov.png' },
                 { id: 35, name: 'Silenziatore per pistola', price: 10000, description: 'equipaggiamento arma', image: 'images/mn/silpistola.png' },
                 { id: 36, name: 'Silenziatore per fucile', price: 15000, description: 'equipaggiamento arma', image: 'images/mn/silfucile.png' },
+            ],
+            proiettili: [
                 { id: 37, name: 'PISTOLA MK II - .45 ACP', price: 180, description: 'Proiettile al pezzo', image: 'images/mn/045.png' },
                 { id: 38, name: 'FUCILE CARABINE (M4 CQB) - 5.56', price: 260, description: 'Proiettile al pezzo', image: 'images/mn/556.png' },
                 { id: 39, name: 'FUCILE ASSALTO MK II (AK 47) - 7.62', price: 220, description: 'Proiettile al pezzo', image: 'images/mn/762.png' },
@@ -954,6 +983,8 @@
                 { id: 41, name: 'FUCILE MITRAGLIATRICE MINIMI', price: 600, description: 'Proiettile al pezzo', image: 'images/mn/proiettili.png' },
                 { id: 42, name: 'FUCILE A POMPA - CALIBRO 12', price: 280, description: 'Proiettile al pezzo', image: 'images/mn/proiettili.png' },
                 { id: 43, name: 'MITRAGLIETTA UZI - 9MM', price: 200, description: 'Proiettile al pezzo', image: 'images/mn/proiettili.png' },
+            ],
+            kitspeciali: [
                 { id: 44, name: 'MITRAGLIETTA MINI AK - 7.62', price: 180, description: 'Proiettile al pezzo', image: 'images/mn/proiettili.png' },
                 { id: 45, name: 'Phantomkey', price: 75000, description: 'Oggetto', image: 'images/mn/itemmercato.png' },
                 { id: 46, name: 'Laptop', price: 90000, description: 'Oggetto', image: 'images/mn/itemmercato.png' },
@@ -1248,7 +1279,7 @@ function closeOrderModal() {
         const formData = new FormData(e.target);
         const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
-        const hasMarketItems = cart.some(item => item.id >= 24);
+        const hasMarketItems = cart.some(item => item.id >= 26);
         const webhookURL = hasMarketItems ? MARKET_WEBHOOK_URL : DISCORD_WEBHOOK_URL;
 
         const webhookData = {
@@ -1463,6 +1494,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const mainTitle = document.getElementById('mainTitle');
         const slogan = document.getElementById('slogan');
         const mercatoLink = document.getElementById('mercatoLink');
+        const proiettiliLink = document.getElementById('proiettiliLink');
+        const kitspecialiLink = document.getElementById('kitspecialiLink');
 
         if (currentTheme === 'light') {
             // Switch to dark theme
@@ -1472,6 +1505,10 @@ document.addEventListener('DOMContentLoaded', function() {
             mainTitle.textContent = "Mercato Nero";
             slogan.textContent = "Più illegale di così si muore";
             mercatoLink.style.display = 'block';
+            proiettiliLink.style.display = 'block';
+            kitspecialiLink.style.display = 'block';
+
+
             currentTheme = 'dark';
         } else {
             // Switch back to light theme
@@ -1481,6 +1518,8 @@ document.addEventListener('DOMContentLoaded', function() {
             mainTitle.textContent = "Armeria Beretta";
             slogan.textContent = "Armeria Beretta: Precisione Italiana, Passione Senza Confini";
             mercatoLink.style.display = 'none';
+            proiettiliLink.style.display = 'none';
+            kitspecialiLink.style.display = 'none';
             currentTheme = 'light';
         }
 
@@ -1501,46 +1540,57 @@ function toggleTheme() {
     const mainTitle = document.getElementById('mainTitle');
     const slogan = document.getElementById('slogan');
     const mercatoLink = document.getElementById('mercatoLink');
+    const proiettiliLink = document.getElementById('proiettiliLink');
+    const kitspecialiLink = document.getElementById('kitspecialiLink');
     const leftLogo = document.getElementById('leftLogo');
     const themeToggle = document.getElementById('themeToggle');
-    const footer = document.querySelector('footer'); // Seleziona il footer
-    
-    const regularNavLinks = Array.from(navLinks).filter(link => 
-        !link.getAttribute('href')?.includes('mercato'));
+    const footer = document.querySelector('footer'); // Footer da nascondere/mostrare
+    const regularCategories = document.querySelectorAll('#libere, #armi, #pack');
+    const regularNavLinks = Array.from(document.querySelectorAll('.category-link')).filter(link => 
+        !['#mercato', '#proiettili', '#kitspeciali'].includes(link.getAttribute('href'))
+    );
 
     if (currentTheme === 'light') {
-        // Passa al tema scuro
+        // Passa al tema dark
         root.setAttribute('data-theme', 'dark');
         background.style.backgroundImage = "url('images/sfondo2.png')";
         audio.src = 'sounds/mercato.mp3';
         mainTitle.textContent = "Mercato Nero";
         slogan.textContent = "Più illegale di così si muore";
-        mercatoLink.style.display = 'block';
         leftLogo.src = 'images/mercato.png';
         themeToggle.src = 'images/mercato.png';
-        footer.style.display = 'none'; // Nascondi il footer
 
-        // Nascondi sezioni e link regolari
-        categoryElements.forEach(element => element.style.display = 'none');
+        // Mostra link e sezioni del tema dark
+        mercatoLink.style.display = 'block';
+        proiettiliLink.style.display = 'block';
+        kitspecialiLink.style.display = 'block';
+
+        // Nascondi link e sezioni regolari
+        footer.style.display = 'none';
+        regularCategories.forEach(category => category.style.display = 'none');
         regularNavLinks.forEach(link => link.style.display = 'none');
-        
+
         currentTheme = 'dark';
     } else {
-        // Torna al tema chiaro
+        // Torna al tema light
         root.setAttribute('data-theme', 'light');
         background.style.backgroundImage = "url('images/sfondo.png')";
         audio.src = 'sounds/background.mp3';
         mainTitle.textContent = "Armeria Beretta";
-        slogan.textContent = "Armeria Beretta: Quality Without Compromise";
-        mercatoLink.style.display = 'none';
+        slogan.textContent = "Quality Without Compromise";
         leftLogo.src = 'images/logo.png';
         themeToggle.src = 'images/logo.png';
-        footer.style.display = 'block'; // Mostra di nuovo il footer
 
-        // Mostra sezioni e link regolari
-        categoryElements.forEach(element => element.style.display = 'block');
+        // Nascondi link e sezioni del tema dark
+        mercatoLink.style.display = 'none';
+        proiettiliLink.style.display = 'none';
+        kitspecialiLink.style.display = 'none';
+
+        // Mostra link e sezioni regolari
+        footer.style.display = 'block';
+        regularCategories.forEach(category => category.style.display = 'block');
         regularNavLinks.forEach(link => link.style.display = 'block');
-        
+
         currentTheme = 'light';
     }
 
@@ -1548,6 +1598,7 @@ function toggleTheme() {
     audio.play();
     initializeMenus();
 }
+
 
 let slideIndex = 0;
     const slides = document.querySelectorAll('.slide');

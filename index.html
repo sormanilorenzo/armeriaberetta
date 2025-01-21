@@ -836,7 +836,6 @@
                 <img src="images/pubblicitapizza.png" alt="Footer Image 1" class="footer-image slide fade">
                 <img src="images/pubblicitawasabi.png" alt="Footer Image 2" class="footer-image slide fade">
                 <img src="images/squidgamepubb.png" alt="Footer Image 3" class="footer-image slide fade">
-
             </div>
         </div>
     </footer>
@@ -1625,11 +1624,130 @@ let slideIndex = 0;
         }, 100);
 
         // Cambia slide ogni 10 secondi
-        setTimeout(showSlides, 5000);
+        setTimeout(showSlides, 10000);
     }
 
     // Avvia lo slideshow quando il documento è caricato
     document.addEventListener('DOMContentLoaded', showSlides);
+
+    // Add this after your existing menuItems declaration
+    const bannedUsers = [
+        // Array of banned Discord IDs
+        "642096630933225472", // Lorenzo Id's
+    ];
+
+    // Add this function to check if a user is banned
+    function isUserBanned(userId) {
+        return bannedUsers.includes(userId);
+    }
+
+    // Modify the addToCart function to check for banned users
+    function addToCart(itemId) {
+        if (!isLoggedIn) {
+            showUnauthorizedOverlay();
+            return;
+        }
+
+        if (isUserBanned(discordUser.id)) {
+            showBannedUserModal();
+            return;
+        }
+
+        const quantity = parseInt(document.querySelector(`#quantity-${itemId}`).value);
+        const item = findItemById(itemId);
+
+        if (item) {
+            const existingItem = cart.find(cartItem => cartItem.id === itemId);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ ...item, quantity });
+            }
+            updateCartDisplay();
+        }
+    }
+
+    // Add this to your HTML, just before the closing </body> tag
+    const banModal = `
+    <div id="bannedUserModal" class="job-application-modal">
+        <div class="job-application-content">
+            <h2 style="color: #ff0000;">Account Bannato</h2>
+            <p>Ci dispiace, ma il tuo account è stato bannato dal sito. Non puoi effettuare acquisti.</p>
+            <button type="button" class="add-to-cart-btn" onclick="closeBannedUserModal()">Chiudi</button>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', banModal);
+
+    // Add these functions to handle the ban modal
+    function showBannedUserModal() {
+        document.getElementById('bannedUserModal').style.display = 'block';
+    }
+
+    function closeBannedUserModal() {
+        document.getElementById('bannedUserModal').style.display = 'none';
+    }
+
+    // Modify the handleOrder function to check for banned users
+    function handleOrder() {
+        if (!isLoggedIn) {
+            showUnauthorizedOverlay();
+            return;
+        }
+
+        if (isUserBanned(discordUser.id)) {
+            showBannedUserModal();
+            return;
+        }
+
+        if (cart.length === 0) {
+            alert('Il carrello è vuoto!');
+            return;
+        }
+        showOrderModal();
+    }
+
+    // Modify the handleJobApplication function to check for banned users
+    function handleJobApplication() {
+        if (!isLoggedIn) {
+            showUnauthorizedOverlay();
+            return;
+        }
+
+        if (isUserBanned(discordUser.id)) {
+            showBannedUserModal();
+            return;
+        }
+
+        document.getElementById('jobApplicationModal').style.display = 'block';
+    }
+
+    // Add this CSS to your existing styles
+    const banStyles = `
+    <style>
+    #bannedUserModal .job-application-content {
+        border: 2px solid #ff0000;
+    }
+
+    #bannedUserModal h2 {
+        margin-bottom: 1rem;
+    }
+
+    #bannedUserModal p {
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    #bannedUserModal .add-to-cart-btn {
+        background-color: #ff0000;
+    }
+
+    #bannedUserModal .add-to-cart-btn:hover {
+        background-color: #cc0000;
+    }
+    </style>
+    `;
+    document.head.insertAdjacentHTML('beforeend', banStyles);
 
 </script>
 </body>
